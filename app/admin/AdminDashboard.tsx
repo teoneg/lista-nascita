@@ -10,7 +10,7 @@ export default function AdminDashboard({ initialItems }: { initialItems: Enriche
   // Form state
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<EnrichedItem>>({
-    id: '', name: '', description: '', link: '', imageUrl: '', price: 0, source: '', isPrenatal: false
+    id: '', name: '', description: '', link: '', imageUrl: '', price: 0, source: '', isExternalList: false
   });
 
   const handleSave = async (e: React.FormEvent) => {
@@ -91,7 +91,7 @@ export default function AdminDashboard({ initialItems }: { initialItems: Enriche
   };
 
   const createNewItem = () => {
-    setFormData({ id: '', name: '', description: '', link: '', imageUrl: '', price: 0, source: '', isPrenatal: false });
+    setFormData({ id: '', name: '', description: '', link: '', imageUrl: '', price: 0, source: '', isExternalList: false });
     setIsEditing(true);
   };
 
@@ -128,25 +128,29 @@ export default function AdminDashboard({ initialItems }: { initialItems: Enriche
               <input type="url" value={formData.imageUrl || ''} onChange={e => setFormData({...formData, imageUrl: e.target.value})} />
             </div>
 
-            <div>
-              <label className="mb-2" style={{ display: 'block', fontSize: '14px', fontWeight: 600 }}>Prezzo (€)</label>
-              <input type="number" step="0.01" value={formData.price || ''} onChange={e => setFormData({...formData, price: parseFloat(e.target.value)})} />
-            </div>
+            {!formData.isExternalList && (
+              <div>
+                <label className="mb-2" style={{ display: 'block', fontSize: '14px', fontWeight: 600 }}>Prezzo (€)</label>
+                <input type="number" step="0.01" value={formData.price || ''} onChange={e => setFormData({...formData, price: parseFloat(e.target.value)})} />
+              </div>
+            )}
 
             <div>
-              <label className="mb-2" style={{ display: 'block', fontSize: '14px', fontWeight: 600 }}>Fonte (es. Amazon)</label>
-              <input type="text" value={formData.source || ''} onChange={e => setFormData({...formData, source: e.target.value})} />
+              <label className="mb-2" style={{ display: 'block', fontSize: '14px', fontWeight: 600 }}>
+                {formData.isExternalList ? 'Nome Negozio (es. Amazon, Prenatal)' : 'Fonte/Negozio (es. Amazon, IKEA)'}
+              </label>
+              <input type="text" required={formData.isExternalList} value={formData.source || ''} onChange={e => setFormData({...formData, source: e.target.value})} />
             </div>
 
             <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <input 
                 type="checkbox" 
-                id="isPrenatal" 
-                checked={formData.isPrenatal || false} 
-                onChange={e => setFormData({...formData, isPrenatal: e.target.checked})}
+                id="isExternalList" 
+                checked={formData.isExternalList || false} 
+                onChange={e => setFormData({...formData, isExternalList: e.target.checked})}
                 style={{ width: 'auto' }}
               />
-              <label htmlFor="isPrenatal" style={{ fontSize: '14px', fontWeight: 600 }}>È la lista Prenatal principale?</label>
+              <label htmlFor="isExternalList" style={{ fontSize: '14px', fontWeight: 600 }}>È una lista esterna (es. Lista Amazon, Lista Prenatal)?</label>
             </div>
 
             <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '16px', marginTop: '16px' }}>
@@ -173,17 +177,23 @@ export default function AdminDashboard({ initialItems }: { initialItems: Enriche
             {items.map(item => (
               <tr key={item.id} style={{ borderBottom: '1px solid var(--pink-100)' }}>
                 <td style={{ padding: '16px 8px' }}>
-                  <div style={{ fontWeight: 500 }}>{item.name} {item.isPrenatal && '⭐'}</div>
+                  <div style={{ fontWeight: 500 }}>{item.name} {item.isExternalList && '📋'}</div>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{item.source}</div>
                 </td>
                 <td style={{ padding: '16px 8px' }}>
-                  {item.price ? `€${item.price.toFixed(2)}` : '-'}
+                  {item.isExternalList ? 'Lista' : (item.price ? `€${item.price.toFixed(2)}` : '-')}
                 </td>
                 <td style={{ padding: '16px 8px' }}>
-                  <span className={`badge badge-${item.state.status}`}>
-                    {item.state.status === 'available' ? 'Disponibile' : 
-                     item.state.status === 'reserved' ? 'In stand-by' : 'Acquistato'}
-                  </span>
+                  {item.isExternalList ? (
+                    <span className="badge" style={{ backgroundColor: '#e2e8f0', color: '#4a5568' }}>
+                      Link Esterno
+                    </span>
+                  ) : (
+                    <span className={`badge badge-${item.state.status}`}>
+                      {item.state.status === 'available' ? 'Disponibile' : 
+                       item.state.status === 'reserved' ? 'In stand-by' : 'Acquistato'}
+                    </span>
+                  )}
                 </td>
                 <td style={{ padding: '16px 8px', textAlign: 'right', display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
                   {item.state.status !== 'available' && (

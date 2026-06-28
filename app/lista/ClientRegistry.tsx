@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import type { EnrichedItem } from '@/lib/items';
 import ItemCard from '@/components/ItemCard';
-import PrenatalCard from '@/components/PrenatalCard';
+import ExternalListCard from '@/components/ExternalListCard';
 
 export default function ClientRegistry({ 
   initialItems, 
@@ -15,8 +15,8 @@ export default function ClientRegistry({
   const [items, setItems] = useState<EnrichedItem[]>(initialItems);
   const [filter, setFilter] = useState<'all' | 'available'>('all');
 
-  const prenatalItem = items.find(i => i.isPrenatal);
-  const regularItems = items.filter(i => !i.isPrenatal);
+  const externalLists = items.filter(i => i.isExternalList);
+  const regularItems = items.filter(i => !i.isExternalList);
 
   const displayedItems = filter === 'available' 
     ? regularItems.filter(i => i.state.status === 'available')
@@ -43,9 +43,13 @@ export default function ClientRegistry({
 
   return (
     <div>
-      {prenatalItem && (
+      {externalLists.length > 0 && (
         <div className="mb-8">
-          <PrenatalCard item={prenatalItem} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {externalLists.map(list => (
+              <ExternalListCard key={list.id} item={list} />
+            ))}
+          </div>
         </div>
       )}
 
