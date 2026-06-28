@@ -98,12 +98,25 @@ export default function AuthGate() {
           <button type="submit" className="btn-primary flex justify-center items-center gap-2" disabled={loading}>
             {loading ? <span className="spinner"></span> : 'Invia Codice'}
           </button>
+
+          <button 
+            type="button" 
+            onClick={() => { setError(''); setStep('code'); }} 
+            className="btn-secondary mt-2"
+            disabled={loading}
+          >
+            Ho già un codice
+          </button>
         </form>
       ) : (
         <form onSubmit={handleVerify} className="flex flex-col gap-4">
           <h2 className="text-center">Inserisci il codice</h2>
           <p className="text-center" style={{ color: 'var(--text-secondary)' }}>
-            Ti abbiamo inviato un codice a <strong>{email}</strong>
+            {email ? (
+              <>Ti abbiamo inviato un codice a <strong>{email}</strong></>
+            ) : (
+              <>Inserisci il codice personale che ti abbiamo inviato via email.</>
+            )}
           </p>
           
           <div>
@@ -126,11 +139,11 @@ export default function AuthGate() {
           
           <button 
             type="button" 
-            onClick={() => setStep('email')} 
+            onClick={() => { setError(''); setStep('email'); }} 
             className="btn-secondary mt-4"
             disabled={loading}
           >
-            Modifica email
+            {email ? 'Modifica email' : 'Richiedi un codice'}
           </button>
         </form>
       )}

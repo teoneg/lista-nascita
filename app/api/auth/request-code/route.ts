@@ -26,12 +26,13 @@ export async function POST(req: NextRequest) {
     const result = await sendCodeEmail(email, code);
 
     if (!result.success) {
-      return NextResponse.json({ error: "Errore durante l'invio dell'email. Riprova più tardi." }, { status: 500 });
+      const errorDetail = typeof result.error === 'object' ? JSON.stringify(result.error) : result.error;
+      return NextResponse.json({ error: `Errore invio email: ${errorDetail || 'Errore generico'}` }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Request code error:', error);
-    return NextResponse.json({ error: 'Errore interno del server' }, { status: 500 });
+    return NextResponse.json({ error: `Errore server: ${error.message || String(error)}` }, { status: 500 });
   }
 }

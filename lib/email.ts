@@ -28,12 +28,12 @@ export async function sendCodeEmail(email: string, code: string) {
 
     if (error) {
       console.error('Error sending email:', error);
-      return { success: false, error };
+      return { success: false, error: error.message || JSON.stringify(error) };
     }
 
     return { success: true, data };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Exception sending email:', error);
-    return { success: false, error };
+    return { success: false, error: error.message || String(error) };
   }
 }
