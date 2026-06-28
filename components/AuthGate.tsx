@@ -14,7 +14,7 @@ export default function AuthGate() {
   const handleRequestCode = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes('@')) {
-      setError('Inserisci un\\'email valida');
+      setError("Inserisci un'email valida");
       return;
     }
     

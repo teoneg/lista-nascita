@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     const result = await sendCodeEmail(email, code);
 
     if (!result.success) {
-      return NextResponse.json({ error: 'Errore durante l\\'invio dell\\'email. Riprova più tardi.' }, { status: 500 });
+      return NextResponse.json({ error: "Errore durante l'invio dell'email. Riprova più tardi." }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });

@@ -59,7 +59,7 @@ export default function AdminDashboard({ initialItems }: { initialItems: Enriche
         setItems(prev => prev.filter(i => i.id !== id));
       }
     } catch (e) {
-      alert('Errore durante l\\'eliminazione');
+      alert("Errore durante l'eliminazione");
     } finally {
       setLoading(false);
     }
