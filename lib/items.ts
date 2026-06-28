@@ -10,7 +10,7 @@ export interface RegistryItem {
   imageUrl?: string;
   price?: number;
   source?: string;
-  isPrenatal?: boolean;
+  isExternalList?: boolean;
 }
 
 export interface ItemState {
