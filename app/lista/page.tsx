@@ -17,11 +17,8 @@ export default async function ListaNascitaPage() {
 
   return (
     <div className="container" style={{ padding: '40px 20px', paddingBottom: '80px' }}>
-      <header className="mb-8" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header className="mb-8" style={{ textAlign: 'center' }}>
         <h1 style={{ color: 'var(--pink-500)', fontSize: '2rem' }}>La nostra lista 🎀</h1>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-          {email}
-        </div>
       </header>
 
       <ClientRegistry initialItems={items} currentUserEmail={email} />
