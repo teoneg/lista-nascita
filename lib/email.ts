@@ -1,18 +1,26 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
-const resend = new Resend(process.env.RESEND_API_KEY || 're_example');
+// Configure SMTP transport for Gmail
+// Requires environment variables: GMAIL_USER and GMAIL_APP_PASSWORD
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
+});
 
 export async function sendCodeEmail(email: string, code: string) {
-  // If no API key is set (e.g. local dev without env vars), just log the code
-  if (!process.env.RESEND_API_KEY) {
+  // If credentials are not set (e.g. local dev without env vars), just log the code
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
     console.log(`[DEV MODE] Email to ${email}: Your code is ${code}`);
     return { success: true };
   }
 
   try {
-    const { data, error } = await resend.emails.send({
-      from: 'Lista Nascita <onboarding@resend.dev>',
-      to: [email],
+    const mailOptions = {
+      from: `"Lista Nascita" <${process.env.GMAIL_USER}>`,
+      to: email,
       subject: 'Il tuo codice di accesso',
       html: `
         <div style="font-family: sans-serif; padding: 20px; color: #3D2C2E; background-color: #FFF9F5;">
@@ -24,16 +32,13 @@ export async function sendCodeEmail(email: string, code: string) {
           <p style="margin-top: 20px; color: #7A6365;">A presto!</p>
         </div>
       `,
-    });
+    };
 
-    if (error) {
-      console.error('Error sending email:', error);
-      return { success: false, error: error.message || JSON.stringify(error) };
-    }
-
-    return { success: true, data };
+    const info = await transporter.sendMail(mailOptions);
+    return { success: true, data: info };
   } catch (error: any) {
-    console.error('Exception sending email:', error);
+    console.error('Error sending email via Nodemailer:', error);
     return { success: false, error: error.message || String(error) };
   }
 }
+
