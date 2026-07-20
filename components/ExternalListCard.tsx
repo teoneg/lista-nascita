@@ -8,8 +8,8 @@ export default function ExternalListCard({ item }: { item: EnrichedItem }) {
       return {
         badgeBg: '#FFF3E0',
         badgeColor: '#E65100',
-        buttonBg: '#232F3E',
-        buttonHoverBg: '#37475A',
+        buttonBg: '#FF9900',
+        buttonHoverBg: '#E68A00',
         borderColor: '#FFE0B2'
       };
     }
@@ -57,7 +57,7 @@ export default function ExternalListCard({ item }: { item: EnrichedItem }) {
             padding: '4px 12px',
             borderRadius: '999px'
           }}>
-            Lista Ufficiale {item.source || 'Esterna'}
+            Lista {item.source || 'Esterna'}
           </span>
         </div>
         
